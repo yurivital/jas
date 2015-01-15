@@ -19,7 +19,7 @@ const char version_minor = 2;
 
 // Hardware ressources
 // Speed transmition for serial com
-long serialBauds = 9600;
+const long serialBauds = 9600;
 
 // OneWire Network pin attachment
 OneWire owNetwork(8); // on pin 8 with  4.7k resistor)
@@ -61,7 +61,7 @@ void logMessage(char errorMsg, boolean debug){
   }
   msg += " = ";
  Serial.print(msg);
- Serial.println((int)errorMsg);
+ Serial.println((byte)errorMsg);
 }
 
 void logBuffer(byte* buff, long len)
@@ -176,7 +176,7 @@ void loop()
     OneWireDeviceFound = scanOneWireNetwork();
     if(!OneWireDeviceFound)
     {
-      logMessage(255,0);
+      logMessage(254,0);
       return;
     }
     
