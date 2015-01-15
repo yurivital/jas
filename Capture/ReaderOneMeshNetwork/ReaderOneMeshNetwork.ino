@@ -5,6 +5,12 @@ Capture
 ***********************
 ***   Change note   ***
 ***********************
+version 0.3
+- change : broadcast conversion command
+- fix : version are not displayed
+- fix : not new line after buffer log on serial port
+- fix :  °c not properly displayed
+
 version 0.2
 - Parasitic mode disabled
 - Loop control
@@ -14,8 +20,8 @@ version 0.1
 
 */
 
-const char version_major = 0;
-const char version_minor = 2;
+const byte version_major = 0;
+const byte version_minor = 3;
 
 // Hardware ressources
 // Speed transmition for serial com
@@ -70,6 +76,7 @@ void logBuffer(byte* buff, long len)
     Serial.write(' ');
     Serial.print(buff[i], HEX);
   }
+   Serial.println("");
 }
 
 boolean checkCrc(byte* buffer, char index, byte msgCrc){
@@ -117,7 +124,9 @@ float readTemp(){
   // Ask for conversion
   logMessage(3,true);
   owNetwork.reset();
-  owNetwork.select(owAddresses);
+  //owNetwork.select(owAddresses);
+  // Broadcast 0xCC ROM address
+  owNetwork.skip();
   owNetwork.write(convertionOrder, 0);        // start conversion, with parasite power off at the end
   
   // wait for the conversion
@@ -184,6 +193,6 @@ void loop()
      float temp =  readTemp();
      digitalWrite(13, LOW);
      Serial.print("TEMP = ");
-     Serial.print( temp);
-     Serial.println(" °C");
+     Serial.print(temp);
+     Serial.println(" *C");
 }
