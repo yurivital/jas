@@ -1,12 +1,21 @@
 #include <OneWire.h>
 /*
 Jupiter Active Sensor
-Capture 0.1 
+Capture 
 ***********************
 ***   Change note   ***
 ***********************
+version 0.2
+- Parasitic mode disabled
+- Loop control
+
+version 0.1 
+- One device OneWire device capacity in parasitic
 
 */
+
+const char version_major = 0;
+const char version_minor = 2;
 
 // Hardware ressources
 // Speed transmition for serial com
@@ -16,11 +25,15 @@ long serialBauds = 9600;
 OneWire owNetwork(8); // on pin 8 with  4.7k resistor)
 
 // Global variables
+// TimeStamp of the previous loop passage
+unsigned long lastLoop = 0;
 // Adresse of the One Wire Network devices 
 byte owAddresses[8];
 
 // store the value of at least one device found during One Wire netowrk scan
 boolean OneWireDeviceFound = false;
+
+char lastMessage = 255;
 // User fonction
 
 // Log messages to the proper output 
@@ -37,6 +50,10 @@ boolean OneWireDeviceFound = false;
  254  KernelPanic - Exit of the main loop
 */
 void logMessage(char errorMsg, boolean debug){
+  if(errorMsg == lastMessage)
+  {
+    return;
+  }
   String msg = String("MSG");
   if(debug)
   {
@@ -101,7 +118,7 @@ float readTemp(){
   logMessage(3,true);
   owNetwork.reset();
   owNetwork.select(owAddresses);
-  owNetwork.write(convertionOrder, 1);        // start conversion, with parasite power on at the end
+  owNetwork.write(convertionOrder, 0);        // start conversion, with parasite power off at the end
   
   // wait for the conversion
   delay(1000);     // maybe 750ms is enough, maybe not
@@ -132,12 +149,29 @@ float readTemp(){
 // Setup
 void setup(){
   Serial.begin(serialBauds);
+  Serial.write("JAS Capture v");
+  Serial.write(version_major);
+  Serial.write(".");
+  Serial.write(version_minor);
+  
   pinMode(13, OUTPUT);
   logMessage(0,TRUE);
 }
 
+
+
+
 void loop()
 {
+   // Perform one loop evrey 5 seconds 
+   unsigned long loopSpan = millis() - lastLoop;
+    long waitTime = 5000 -  loopSpan;
+    lastLoop = millis();
+    if( waitTime >0)
+    {
+      delay(waitTime); 
+    }
+         
     logMessage(4,1);
     OneWireDeviceFound = scanOneWireNetwork();
     if(!OneWireDeviceFound)
@@ -152,5 +186,4 @@ void loop()
      Serial.print("TEMP = ");
      Serial.print( temp);
      Serial.println(" °C");
-
 }
