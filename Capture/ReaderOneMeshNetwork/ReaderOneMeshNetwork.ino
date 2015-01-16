@@ -92,6 +92,7 @@ boolean checkCrc(byte* buffer, char index, byte msgCrc){
 
 // Perfom a One Wire network scan
 boolean scanOneWireNetwork(){
+    owNetwork.reset_search();
   boolean found = owNetwork.search(owAddresses);
 
   if (!found) {
@@ -106,7 +107,9 @@ boolean scanOneWireNetwork(){
    
    // Check the CRC
   boolean validCrc =   checkCrc(owAddresses,7,owAddresses[7]);
+
   return validCrc;
+  
 }
 
 // Perform Temprature Reading
@@ -140,6 +143,7 @@ float readTemp(){
    for (char i = 0; i < 9; i++) {           // we need 9 bytes
     data[i] = owNetwork.read();
   }
+  
   logBuffer(data,9);
   
    // Convert Data to Temp
@@ -158,11 +162,10 @@ float readTemp(){
 // Setup
 void setup(){
   Serial.begin(serialBauds);
-  Serial.write("JAS Capture v");
-  Serial.write(version_major);
-  Serial.write(".");
-  Serial.write(version_minor);
-  
+  Serial.print("JAS Capture v");
+  Serial.print(version_major);
+  Serial.print(".");
+  Serial.println(version_minor);
   pinMode(13, OUTPUT);
   logMessage(0,TRUE);
 }
