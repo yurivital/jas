@@ -3,8 +3,16 @@
 Jupiter Active Sensor
 Capture 
 ***********************
-***   Change note   ***
+***  Changes notes  ***
 ***********************
+version 0.5.a
+- change : can read temprature up to 100 devices (software limitation)
+- change : refactorisation of method name and signatures
+
+version 0.4
+- fix : version are still not displayed
+- fix : devices are not found each 2 search
+
 version 0.3
 - change : broadcast conversion command
 - fix : version are not displayed
@@ -20,9 +28,9 @@ version 0.1
 
 */
 
-const byte version_major = 0;
-const byte version_minor = 3;
-
+const char version_major = '0';
+const char version_minor = '5';
+const char version_revision= 'a';
 // Hardware ressources
 // Speed transmition for serial com
 const long serialBauds = 9600;
@@ -33,8 +41,18 @@ OneWire owNetwork(8); // on pin 8 with  4.7k resistor)
 // Global variables
 // TimeStamp of the previous loop passage
 unsigned long lastLoop = 0;
-// Adresse of the One Wire Network devices 
-byte owAddresses[8];
+ 
+//  One Wire Network Capacity
+const int owAddressesLen = 100;
+// Number of One Wire devices found
+ int owNbDevices = 0;
+// Adresse of the One Wire Network devices
+byte owAddresses[owAddressesLen][8];
+
+// raw Data buffer
+byte rawTempData[12];
+// temperature mesuré par tous le périphériques présent
+float  measuredTemp[owAddressesLen];
 
 // store the value of at least one device found during One Wire netowrk scan
 boolean OneWireDeviceFound = false;
@@ -51,8 +69,11 @@ char lastMessage = 255;
  2    OneWire CRC correct
  3    Ask for conversion
  4    Entering int the loop
+ 5    owGetDevice 
+ 6    Read Temperature
  100  Not any OneWire devices found
  101  OneWire CRC not correct
+ 102  Device number exceed the number of found devices
  254  KernelPanic - Exit of the main loop
 */
 void logMessage(char errorMsg, boolean debug){
@@ -72,6 +93,7 @@ void logMessage(char errorMsg, boolean debug){
 
 void logBuffer(byte* buff, long len)
 {
+  Serial.write(' BUFFER = ');
    for(long i = 0; i < len; i++) {
     Serial.write(' ');
     Serial.print(buff[i], HEX);
@@ -79,7 +101,7 @@ void logBuffer(byte* buff, long len)
    Serial.println("");
 }
 
-boolean checkCrc(byte* buffer, char index, byte msgCrc){
+boolean owCheckCrc(byte* buffer, char index, byte msgCrc){
   boolean validCrc = false;
   // Check if the CRC is correct
    validCrc =(OneWire::crc8(buffer, index) == msgCrc);   
@@ -90,87 +112,143 @@ boolean checkCrc(byte* buffer, char index, byte msgCrc){
   return validCrc;
 }
 
-// Perfom a One Wire network scan
-boolean scanOneWireNetwork(){
-    owNetwork.reset_search();
-  boolean found = owNetwork.search(owAddresses);
+// Return the adresse of the selected devices
+// @adresses of all devices
+// @deviceNumber the number of the
+byte* owGetAdresse(int deviceNumber)
+{ 
+  logMessage(6,1);
+  if(deviceNumber > owNbDevices)
+  {
+    logMessage(102,1);
+    return  0;
+  }
+   return  owAddresses[deviceNumber];
+}
 
-  if (!found) {
+// Perfom a One Wire network scan
+// return : the number of devies found
+ int scanOneWireNetwork(){
+     // reset the number of devices
+    owNbDevices = 0;
+    
+    // Found flag
+    boolean found =true;  
+    owNetwork.reset_search();
+    for(char i = 0 ; i < owAddressesLen && found ; i++)
+    {
+       byte*  currentAdresse = owAddresses[owNbDevices];
+       found = owNetwork.search(currentAdresse);
+       if(found)
+       {
+         // log found and display ROM
+          logMessage(1,true);
+          logBuffer(currentAdresse,8);
+           // Check the CRC
+          boolean validCrc =   owCheckCrc(currentAdresse,7,currentAdresse[7]);
+          if(validCrc)
+          {
+            // The device is valid - accept the ROM
+             owNbDevices ++;
+          }
+       }
+    }
+  
+  // Any devices found - return false
+  if (owNbDevices == 0) {
     logMessage(100,true);
     owNetwork.reset_search();
     delay(250);
     return false;
   }
-   // log found and display ROM
-   logMessage(1,true);
-   logBuffer(owAddresses,8);
-   
-   // Check the CRC
-  boolean validCrc =   checkCrc(owAddresses,7,owAddresses[7]);
+  else
+  {
+    // Return true beacuse device found
+    return true;
+  }
+}
 
-  return validCrc;
+
+
+// Fetch the buffer register from a device
+// @deviceNumber : the number of the devices to get
+// return : the raw temprature buffer from the device register
+void owReadRawTempData(int deviceNumber)
+{
   
+    // Order for asking last conversion on devices
+  byte readOrder = 0xBE;
+  byte* currentAdresse = owGetAdresse(deviceNumber);
+  owNetwork.select(currentAdresse);    
+  owNetwork.write(readOrder); 
+   for (char i = 0; i < 9; i++) {           // we need 9 bytes
+       rawTempData[i] = owNetwork.read();
+    }
+  logMessage(6,1);
+  logBuffer(currentAdresse,8);
+  logBuffer(rawTempData,9);
+  return ;
 }
 
 // Perform Temprature Reading
-float readTemp(){
-  // temperature
-  float  celsius;
+void owReadTemp(){
+
   // OneWireDevice is present
   byte present = 0;
-  // raw Data buffer
-  byte data[12];
+  
   // Order for asking conversion on devices
   byte convertionOrder = 0x44;
-  // Order for asking last conversion on devices
-  byte readOrder = 0xBE;
-  // Ask for conversion
+
+  // Ask for conversion for all devices at once
   logMessage(3,true);
   owNetwork.reset();
-  //owNetwork.select(owAddresses);
-  // Broadcast 0xCC ROM address
-  owNetwork.skip();
+  owNetwork.skip(); // Broadcast using 0xCC ROM address
   owNetwork.write(convertionOrder, 0);        // start conversion, with parasite power off at the end
   
   // wait for the conversion
   delay(1000);     // maybe 750ms is enough, maybe not
-  // we might do a ds.depower() here, but the reset will take care of it.
-  // read the value
-  present = owNetwork.reset();
   
-  owNetwork.select(owAddresses);    
-  owNetwork.write(readOrder); 
-   for (char i = 0; i < 9; i++) {           // we need 9 bytes
-    data[i] = owNetwork.read();
-  }
+
   
-  logBuffer(data,9);
-  
+  // read data from all devices
+  for(int i =0; i < owNbDevices; i++)
+  {
+      present = owNetwork.reset();
+     owReadRawTempData(i);
    // Convert Data to Temp
-  int16_t raw = (data[1] << 8) | data[0];
-  raw = raw << 3; // 9 bit resolution default
-  if (data[7] == 0x10) {
+   int16_t raw = (rawTempData[1] << 8) | rawTempData[0];
+   raw = raw << 3; // 9 bit resolution default
+   // More resolution left
+   if (rawTempData[7] == 0x10) {
       // "count remain" gives full 12 bit resolution
-      raw = (raw & 0xFFF0) + 12 - data[6];
+      raw = (raw & 0xFFF0) + 12 - rawTempData[6];
+   }
+   measuredTemp[i] = (float)raw / 16.0;  
   }
-   celsius = (float)raw / 16.0;
-   return celsius;
+  
+   return;
 }
 
-// Control program
 
-// Setup
+
+/* 
+**********************************
+*****   Control program      *****
+**********************************
+*/
+
+// Setup the card
 void setup(){
   Serial.begin(serialBauds);
   Serial.print("JAS Capture v");
   Serial.print(version_major);
   Serial.print(".");
-  Serial.println(version_minor);
+  Serial.print(version_minor);
+  Serial.print(".");
+  Serial.println(version_revision);
   pinMode(13, OUTPUT);
   logMessage(0,TRUE);
 }
-
-
 
 
 void loop()
@@ -193,9 +271,14 @@ void loop()
     }
     
      digitalWrite(13, HIGH);
-     float temp =  readTemp();
+     owReadTemp();
      digitalWrite(13, LOW);
-     Serial.print("TEMP = ");
-     Serial.print(temp);
-     Serial.println(" *C");
-}
+     for(int i=0; i< owNbDevices;i++)
+     {
+       Serial.print("DEVICE ");
+       Serial.print(i);
+       Serial.print(" - TEMP = ");
+       Serial.print(measuredTemp[i],DEC);
+       Serial.println(" *C");
+     }
+   }
