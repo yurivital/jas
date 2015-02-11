@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+ <div><h2>Test Form</h2></div>
+ <form action="/RecordTempData" method="post">
+ <fieldset>
+    <div>deviceID
+        <input type="text" name="deviceID" value="DTEST001"></input></div>
+    <div>sensorID
+         <input type="text" name="sensorID" value="ROM777"></input></div>
+   <div>Temperature
+         <input type="text" name="temperature" value='12.2'></input></div>
+
+   <div><input type="submit" value="Send" /></div>
+    </fieldset>
+   </form>
+{% endblock %}

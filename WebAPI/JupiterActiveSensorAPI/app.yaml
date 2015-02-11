@@ -12,7 +12,7 @@ handlers:
 - url: /Admin/.*
   login: admin
   secure: always
-  script: admin.app
+  script: admin_backoffice.app
 
 - url: /.*
   script: main.app

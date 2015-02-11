@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% autoescape false %}
+<div id="menu">
+  <div id="profile">Hello {{ curent_user }}</<div>
+<div><a href="">Register a device</a> 
+  </div>
+  <div id="devices" class="table">
+  {% for device in devices %}
+<div id="row">
+
+ <div  class="cols">
+   {{ device.device_id}}
+  </div>
+ <div  class="cols">
+   {{ device.name|e}}
+  </div>
+  <div  class="cols">
+   {{ device.owner}}
+  </div>
+</div> 
+  {% endfor %}
+  </div>
+
+  {% endautoescape %}
+  {% endblock %}
+
