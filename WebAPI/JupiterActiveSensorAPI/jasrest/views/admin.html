@@ -2,26 +2,40 @@
 
 {% block content %}
 {% autoescape false %}
-<div id="menu">
-  <div id="profile">Hello {{ curent_user }}</<div>
-<div><a href="">Register a device</a> 
-  </div>
-  <div id="devices" class="table">
+<div>
+	<a href="/Admin/create/"><span class="gyphicon glyphicon-add"></span> New device </a>
+</div>
+  <table class="table">
+  <thead>
+  <tr>
+  <th>Device ID</th>
+  <th>Name</th>
+  <th>Owner</th>
+  <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
   {% for device in devices %}
-<div id="row">
-
- <div  class="cols">
-   {{ device.device_id}}
+  <tr>
+	  <td> <a href="{{edit_url}}/{{ device.device_id}}"><span class="glyphicon glyphicon-edit"></span> {{ device.device_id }}</td>
+	  <td>{{ device.name|e }}</td>
+	  <td>{{ device.owner }}</td>
+	  <td class="col-md-3">
+		  <a href="javascript:$('#confirmPane{{device.device_id}}').toggle()">
+			  <span class="glyphicon glyphicon-remove"></span> Delete</a>
+		  <div class="panel panel-default"style='display:none' id="confirmPane{{device.device_id}}" >
+  <div class="text-danger panel-body">
+	  Confirm the suppression of "{{device.name|e}}" and all belong data ?
+	  <a href="delete/{{device.device_id}}">Yes delete !</a> <br />
+	  <a href="javascript:$('#confirmPane{{device.device_id}}').toggle()">Not really...</a>
   </div>
- <div  class="cols">
-   {{ device.name|e}}
-  </div>
-  <div  class="cols">
-   {{ device.owner}}
-  </div>
-</div> 
+</div>
+	  </td>
+  </tr>
   {% endfor %}
-  </div>
+  </tbody>
+</table>
+
 
   {% endautoescape %}
   {% endblock %}

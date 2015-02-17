@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% autoescape false %}
+<form method="post" action="/Admin/edit/{{device_id}}">
+	<div class="form-group">
+		<label for="device_id">Device identity number</label>
+		<input type="text" class="form-control" name="device_id" placeholder="Enter device identifier" value="{{ device_id }}">
+		
+	</div>
+	<div class="form-group">
+	   <label for="device_name">Device friendly name</label>
+	   <input type="text" class="form-control" name="device_name" placeholder="Enter the device name" value="{{ device_name|e }}">
+	</div>
+	
+	<div class="form-group">
+	   <label for="device_name">Device owner name</label>
+	   <label type="text" class="form-control" name="device_owner" placeholder="Enter the owner device name" readonly='true' >{{ device_owner }}</label>
+   </div>
+   	<div class="form-group">
+	   <label for="device_name">Device is active</label>
+	   <input type="checkbox" name="device_active" {{device_active }}  >
+   </div>
+	 <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+{% endautoescape %}
+{% endblock %}
+

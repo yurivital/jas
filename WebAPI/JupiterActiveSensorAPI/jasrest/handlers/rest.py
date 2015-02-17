@@ -1,7 +1,7 @@
 import webapp2
 import logging
 import jinja2
-from jasrest.handlers.ViewHandler import *
+from jasrest.handlers.viewhandler import *
 from jasrest.models.temperatureRecord import *
 from jasrest.models.device import *
 

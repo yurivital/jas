@@ -9,6 +9,18 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /Admin/bundles/bootstrap
+  static_dir: bundles/bootstrap-3.3.2-dist
+
+- url: /Admin/edit/bundles/bootstrap
+  static_dir: bundles/bootstrap-3.3.2-dist
+
+- url: /Admin/bundles/jquery
+  static_dir: bundles/jquery
+
+- url : /Admin/edit/bundles/jquery
+  static_dir: bundles/jquery
+
 - url: /Admin/.*
   login: admin
   secure: always
