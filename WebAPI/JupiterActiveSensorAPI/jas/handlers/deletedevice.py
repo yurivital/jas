@@ -1,7 +1,7 @@
 import webapp2
 import logging
-from jasrest.models.device import *
-from jasrest.handlers.viewhandler import ViewHandler
+from jas.models.device import *
+from jas.handlers.viewhandler import ViewHandler
 
 class DeleteDeviceHandler(ViewHandler):
 	def get(self, device_id):

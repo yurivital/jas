@@ -1,8 +1,8 @@
 import webapp2
 import logging
 import uuid
-from jasrest.models.device import *
-from jasrest.handlers.viewhandler import ViewHandler
+from jas.models.device import *
+from jas.handlers.viewhandler import ViewHandler
 
 """ Create a device and redirect to the edit form """
 class CreateDeviceHandler(ViewHandler):

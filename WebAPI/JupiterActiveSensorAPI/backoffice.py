@@ -2,10 +2,10 @@
 
 import webapp2
 import logging
-from jasrest.handlers.mainadmin import *
-from jasrest.handlers.editdevice import *
-from jasrest.handlers.deletedevice import *
-from jasrest.handlers.createdevice import *
+from jas.handlers.mainadmin import *
+from jas.handlers.editdevice import *
+from jas.handlers.deletedevice import *
+from jas.handlers.createdevice import *
 
 logging.info('Handlers admin Registration')
 
