@@ -24,10 +24,10 @@ handlers:
 - url: /Admin/.*
   login: admin
   secure: always
-  script: admin_backoffice.app
+  script: backoffice.app
 
-- url: /.*
-  script: main.app
+- url: /API/.*
+  script: restapi.app
 
 libraries:
 - name: webapp2
