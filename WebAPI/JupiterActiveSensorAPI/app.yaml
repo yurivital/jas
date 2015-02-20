@@ -9,22 +9,21 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
-- url: /Admin/bundles/bootstrap
+- url: /(.*)/bundles/bootstrap
   static_dir: bundles/bootstrap-3.3.2-dist
 
-- url: /Admin/edit/bundles/bootstrap
-  static_dir: bundles/bootstrap-3.3.2-dist
-
-- url: /Admin/bundles/jquery
-  static_dir: bundles/jquery
-
-- url : /Admin/edit/bundles/jquery
+- url: /(.*)/bundles/jquery
   static_dir: bundles/jquery
 
 - url: /Admin/.*
   login: admin
   secure: always
   script: backoffice.app
+
+- url: /Console/.*
+  login: required 
+  secure: always
+  script: console.app
 
 - url: /API/.*
   script: restapi.app

@@ -34,13 +34,16 @@ class EditDeviceHandler(ViewHandler):
 
 	""" Update the device information """
 	def post(self, device_id):
-		logging.info('Post Edit device {0}'.format(device_id))
-		
+		logging.info('Post Edit device {0}'.format(device_id))	
 		device = Device.query_device_id(device_key,device_id)
+		disasociate = (self.request.get('disasociate') == 'on')
 		#Collection form data
 		device.device_id =  self.request.get('device_id')
 		device.name = self.request.get('device_name')
                 device.active = (self.request.get('device_active') == 'on')
+		if disasociate:
+			logging.info("Disasociating")
+			device.owner = None
 		device.put()
 		self.redirect_to('admin')
 		

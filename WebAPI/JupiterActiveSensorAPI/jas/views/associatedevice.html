@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% autoescape false %}
+<form method="post" action="/Console/associate/{{device_id}}">
+	<div class="form-group">
+		<label for="device_id">Device identity number</label>
+		<label  class="form-control">{{ device_id }}</label>
+		
+	</div>
+	 <button type="submit" class="btn btn-default">Associate with my account</button>
+</form>
+
+{% endautoescape %}
+{% endblock %}
+
