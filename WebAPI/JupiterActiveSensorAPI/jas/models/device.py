@@ -6,7 +6,7 @@ from jas.models.datarecord import *
 device_key = ndb.Key('Device','default_device')
 
 class Device(ndb.Model):
-	device_id	= ndb.TextProperty(indexed=True)
+	device_id	= ndb.StringProperty(indexed=True)
 	name		= ndb.TextProperty()
 	owner		= ndb.UserProperty()
 	active		= ndb.BooleanProperty()

@@ -8,9 +8,9 @@ from google.appengine.ext import ndb
 tempdata_key = ndb.Key('TempData', 'default_tempdata')
 
 class DataRecord(ndb.Model):
-	device_id 	= ndb.TextProperty()
-	sensor_id	= ndb.TextProperty()
-	temprature	= ndb.TextProperty()
+	sensor_id	= ndb.StringProperty()
+	data		= ndb.FloatProperty()
+	unit		= ndb.StringProperty()
 	date		= ndb.DateTimeProperty(auto_now_add=True)
 
 
