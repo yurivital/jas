@@ -7,7 +7,7 @@ from google.appengine.ext import ndb
 
 tempdata_key = ndb.Key('TempData', 'default_tempdata')
 
-class TemperatureRecord(ndb.Model):
+class DataRecord(ndb.Model):
 	device_id 	= ndb.TextProperty()
 	sensor_id	= ndb.TextProperty()
 	temprature	= ndb.TextProperty()
