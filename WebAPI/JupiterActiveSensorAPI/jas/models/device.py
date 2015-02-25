@@ -1,7 +1,7 @@
 import logging
 import datetime
 from google.appengine.ext import ndb
-from jas.models.datarecord import *
+from jas.models.temperaturerecord import *
 
 device_key = ndb.Key('Device','default_device')
 
@@ -11,7 +11,7 @@ class Device(ndb.Model):
 	owner		= ndb.UserProperty()
 	active		= ndb.BooleanProperty()
 	registred_date	= ndb.DateTimeProperty(auto_now_add=True)
-	data_records	= ndb.StructuredProperty(DataRecord, repeated=True)
+	temperatures	= ndb.StructuredProperty(TemperatureRecord, repeated=True)
 
 	@classmethod 
 	def query_device_id(cls, ancestor_key, device_id):
@@ -24,8 +24,7 @@ class Device(ndb.Model):
 
 	@classmethod
 	def query_active_device_id(cls, ancestor_key, device_id):
-		result = cls.query( Device.device_id == device_id, 
-				Device.active==True).fetch(1)
+		result = cls.query( Device.device_id == device_id, 				Device.active == True,	ancestor=ancestor_key).fetch(1)
 		if len(result) > 0:
 			return result[0]
 		else:

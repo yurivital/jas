@@ -6,16 +6,16 @@
 
 <div class="panel panel-default">
 	<div class="panel panel-header">
-<h3>Recording data</h3>	
+<h3>Recording temperature data</h3>	
 	</div>
 	<div class="panel panel-body">
-		<h4>POST /API/SetRecord/$device_id$</h4>
+		<h4>POST /API/SetTemperatureRecord/$device_id$</h4>
 		<code>
 		[
 			{
 				'sensorID' : $sensor_id$,
-				'data': $data$,
-				'unit': $unit$
+				'temperature': $data$,
+				 'timestamp' : $datetime$
 			},
 		]
 	 </code>
@@ -23,10 +23,10 @@
 		 Array of :
 	 <ul>
 		 <li>$device_id$:string value of the identity number of an active device</li>
-		 <li>$data$:float, value of measured data</li>
-		 <li>$unit$:string, unit of the measured data<li> 
+		 <li>$sensorid$:string, value of the identity number ot the sensor</li>
+		 <li>$data$:float, the measured temperature<li>
+		 <li>$datetime$:datetime, the date and time of the measure. Automaticly added if blank.
 	 </ul>
-
 	</div>
 </div>
 {% endautoescape %}

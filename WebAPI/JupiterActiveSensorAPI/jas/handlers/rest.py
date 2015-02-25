@@ -4,11 +4,11 @@ import jinja2
 import json
 import uuid
 from jas.handlers.viewhandler import *
-from jas.models.temperatureRecord import *
+from jas.models.temperaturerecord import *
 from jas.models.device import *
 
 ## TEMP
-class SetRecordHandler(ViewHandler):
+class SetTemperatureRecordHandler(ViewHandler):
     def get(self):
 	template = self.load_template('jasapidoc.html')
         self.response.write(template.render())
@@ -19,8 +19,6 @@ class SetRecordHandler(ViewHandler):
 	logging.info("SetRecord for device {0} - request {1}".format(device_id,request_id))
 
 	self.response.headers['Content-Type'] = "application/json"
-        
-	device_id = self.request.get('deviceID')
         device_ok = Device.is_active_registred_device(device_key, device_id)
         if (device_ok  == False):
                msg_error = { "status" : "KO", 
