@@ -10,9 +10,12 @@ class MainAdminHandler(ViewHandler):
     """ Affiche la liste des peripheriques declares """
     def get(self):
         curent_user = users.get_current_user().nickname()
-	devices = Device.get_devices(device_key, 120)
-	viewbag = { 'curent_user' : curent_user , 'devices' : devices, 'edit_url':'edit' }
+        devices = Device.get_devices(device_key, 120)
+        viewbag = { 'curent_user' : curent_user ,
+                    'devices' : devices,
+                    'edit_url':'edit'
+                    }
         logging.info("Admin - current user is {0}".format(curent_user))
         template = self.load_template('admin.html')
-        self.response.write(template.render(viewbag))
+        return self.response.write(template.render(viewbag))
         

@@ -8,8 +8,10 @@
 	<div class="panel panel-header">
 <h3>Recording temperature data</h3>	
 	</div>
+	<!-- Doc Set -->
 	<div class="panel panel-body">
 		<h4>POST /API/SetTemperatureRecord/$device_id$</h4>
+		Data load :
 		<code>
 		[
 			{
@@ -27,7 +29,28 @@
 		 <li>$data$:float, the measured temperature<li>
 		 <li>$datetime$:datetime, the date and time of the measure. Automaticly added if blank.
 	 </ul>
+	 Return :
+	 TODO
+	 
 	</div>
+	<!-- doc get -->
+		<div class="panel panel-body">
+		<h4>GET /API/GetTemperatureRecord/$device_id$/$date_start$/$date_end$</h4>
+        Params
+<ul>
+		 <li>$device_id$:string value of the identity number of an active device</li>
+		 <li>$date_start$:string,  start of the period of data to return</li>
+		 <li>$date_start$:string,  end of the period of data to return<li>
+	 </ul>		
+	Data load
+		<br/> No data needed
+		Return
+		
+		 <br/>
+		 Array of :
+	 
+	</div>
+
 </div>
 {% endautoescape %}
 {% endblock %}

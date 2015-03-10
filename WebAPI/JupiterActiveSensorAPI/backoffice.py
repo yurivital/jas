@@ -2,12 +2,12 @@
 
 import webapp2
 import logging
-from jas.handlers.mainadmin import *
-from jas.handlers.editdevice import *
-from jas.handlers.deletedevice import *
-from jas.handlers.createdevice import *
+from jas.handlers.mainadmin import MainAdminHandler
+from jas.handlers.editdevice import EditDeviceHandler
+from jas.handlers.deletedevice import DeleteDeviceHandler
+from jas.handlers.createdevice import CreateDeviceHandler
 
-logging.info('Handlers admin Registration')
+logging.info('Handlers Admin Registration')
 
 app = webapp2.WSGIApplication([
     webapp2.Route(r'/Admin/', handler=MainAdminHandler, name="admin"),

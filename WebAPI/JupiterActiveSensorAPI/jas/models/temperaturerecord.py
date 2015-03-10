@@ -2,14 +2,32 @@ import logging
 import datetime
 from google.appengine.ext import ndb
 
-""" ancestor key for consistant temperature record """
-tempdata_key = ndb.Key('TempData', 'default_tempdata')
 
-""" Define a persisted temperature record """
+tempdata_key = ndb.Key('TempData', 'default_tempdata')
+""" ancestor key for consistant temperature record """
+
 class TemperatureRecord(ndb.Model):
+	""" Define a persisted temperature record """
+	device_id	= ndb.StringProperty(indexed=True)
+	""" Device identity number """
+	sensor_id	= ndb.StringProperty()
 	""" Sensor identity number """
-	sensor_id	= ndb.StringProperty(indexed=True)
-	""" Value ot the measured temperature """
 	temperature	= ndb.FloatProperty()
-	""" Value of the date and time of the measure """
+	""" Value ot the measured temperature """
 	timestamp	= ndb.DateTimeProperty(auto_now_add=True, indexed=True)
+	""" Value of the date and time of the measure """
+
+        @classmethod
+        def get_temperatures(cls, device_id, date_start, date_end):
+                result = cls.query( TemperatureRecord.device_id == device_id,
+                                    TemperatureRecord.timestamp >= date_start,
+                                    TemperatureRecord.timestamp <= date_end,
+                                     ).fetch()
+                return result
+
+        @classmethod
+        def delete_for_device(cls, device_id):
+                """ Delete all occurence of tempetature recording for the device"""
+                records_keys = cls.query( TemperatureRecord.device_id == device_id).fetch(keys_only=True)
+                ndb.delete_multi(book_keys)
+                return

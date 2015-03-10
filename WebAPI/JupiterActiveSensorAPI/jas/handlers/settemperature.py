@@ -3,19 +3,15 @@ import logging
 import jinja2
 import json
 import uuid
-from jas.handlers.viewhandler import *
-from jas.models.temperaturerecord import *
-from jas.models.device import *
+from jas.handlers.viewhandler import ViewHandler
+from jas.models.temperaturerecord import TemperatureRecord
+from jas.models.device import Device
 
-""" Handle Http request for temperature recording """
 class SetTemperatureRecordHandler(ViewHandler):
-    """ Return the documentation of the api """
-    def get(self):
-        template = self.load_template('jasapidoc.html')
-        self.response.write(template.render())
+    """ Handle Http request for temperature recording """
         
-    """ Persist in database the temperature records performed by the device """
     def post(self, device_id):
+        """ Persist in database the temperature records performed by the device """
         request_id = str(uuid.uuid1())
         logging.info("SetRecord for device {0} - request {1}".format(device_id,request_id))
         self.response.headers['Content-Type'] = "application/json"
@@ -50,11 +46,9 @@ class SetTemperatureRecordHandler(ViewHandler):
         for temperature in temperature_data :
             try:
                 tempData = TemperatureRecord()
-                tempData.device_id = device_id
                 tempData.sensor_id= temperature['sensorId']
                 tempData.temperature = temperature['temperature']
-                device.temperatures.append(tempData)
-                device.put();
+                device.add_temperature(tempData)
                 nb_records = nb_records + 1
             except:
                 message = "An unexpected error occured while persisting data : {0}".format(temperature)
@@ -66,4 +60,4 @@ class SetTemperatureRecordHandler(ViewHandler):
                    "message" : message
                    }
         logging.info(msg_ok)
-        self.response.out.write(json.dumps(msg_ok));
+        self.response.out.write(json.dumps(msg_ok));    
