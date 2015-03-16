@@ -68,7 +68,7 @@ class Device(ndb.Model):
                 """ Hook de traitement Post Suppression """
                 return TemperatureRecord.delete_for_device(cls.device_id)
 
-        @classmethod
+        
         def add_temperature(cls, record):
                 """ Add a temparature record for the device """
                 record.device_id = cls.device_id;
@@ -77,7 +77,7 @@ class Device(ndb.Model):
 
         def get_temperature(cls, date_start, date_end):
                 """ Return a subset of data record"""
-                return TemperatureRecord.get_temperatures(self.device_id, date_start, date_end)
+                return TemperatureRecord.get_temperatures(cls.device_id, date_start, date_end)
         
                 
         

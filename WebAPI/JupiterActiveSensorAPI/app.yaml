@@ -14,6 +14,12 @@ handlers:
 
 - url: /(.*)/bundles/jquery
   static_dir: bundles/jquery
+  
+- url: /(.*)/bundles/chart
+  static_dir: bundles/chart
+
+- url: /(.*)/bundles/jasConsole
+  static_dir: bundles/jasConsole
 
 - url: /Admin/.*
   login: admin

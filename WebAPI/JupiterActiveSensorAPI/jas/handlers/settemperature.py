@@ -5,7 +5,7 @@ import json
 import uuid
 from jas.handlers.viewhandler import ViewHandler
 from jas.models.temperaturerecord import TemperatureRecord
-from jas.models.device import Device
+from jas.models.device import *
 
 class SetTemperatureRecordHandler(ViewHandler):
     """ Handle Http request for temperature recording """
@@ -39,7 +39,7 @@ class SetTemperatureRecordHandler(ViewHandler):
                 }
             logging.info(msg_error)
             return self.response.out.write(json.dumps(msg_error));
-        device = Device.query_device_id(device_key,device_id )
+        device = Device.query_device_id(device_key, device_id )
         nb_records = 0
         status = "OK"
         message = ""
@@ -50,8 +50,8 @@ class SetTemperatureRecordHandler(ViewHandler):
                 tempData.temperature = temperature['temperature']
                 device.add_temperature(tempData)
                 nb_records = nb_records + 1
-            except:
-                message = "An unexpected error occured while persisting data : {0}".format(temperature)
+            except Exception, e:
+                message = "An unexpected error occured while persisting data : {0}. {1}".format(temperature,e)
                 status = "WARN"
 
         msg_ok = { "status" : status,

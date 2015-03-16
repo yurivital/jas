@@ -1,0 +1,9 @@
+{
+    "name": "jasConsole",
+    "version": "0.0.1",
+    "dependencies":
+    {
+        "name":"Chart.js",
+        "version" : "1.0.2"
+    }
+}

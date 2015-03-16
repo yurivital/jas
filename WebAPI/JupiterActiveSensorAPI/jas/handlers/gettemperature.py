@@ -7,34 +7,42 @@ from jas.models.temperaturerecord import *
 from jas.models.device import *
 
 class GetTemperatureRecordHandler(webapp2.RequestHandler):
-    message_response = { 'status' : '',
-                     'message': '',
-                     'uuid' :  str(uuid.uuid1()),
-                     'temperatures' : []
-                     }
+    
+    
         
     
     def get(self, device_id, date_start, date_end):
+        message_response = { 'status' : '',
+                     'message': '',
+                     'request_id' : '',
+                     'temperatures' : []
+                     }
+        
         """ Handle Http request for temperature retrieving """    
         device = Device.query_device_id(device_key, device_id)
 
         if device is None :
-            write_response(False, "the device is unknow device");
-            return
+            return write_response(message_response, False, "the device is unknow device");
         
         date_start = datetime.datetime.strptime(date_start,'%Y%m%d')
         date_end = datetime.datetime.strptime(date_end,'%Y%m%d')
 
-        temperatures = device.get_temperatures(date_start, date_end)
-        self.message_response['temperatures'] = temperatures
-        return write_response(True, 'Success');
+        temperatures = device.get_temperature(date_start, date_end)
+        for temperature in temperatures:
+            message_response['temperatures'].append(  { 'sensor_id' : temperature.sensor_id,
+                                                             'temperature' : temperature.temperature,
+                                                             'timestamp' : temperature.timestamp.strftime('%Y-%d-%m %H:%M:%S %z')})
+            
+        return self.write_response(message_response, True, '');
 
-    def write_response(self, success, message):
+    def write_response(self, message_response, success, message):
+        """ output the message buffer"""
+        message_response['request_id'] = str(uuid.uuid1())
         if success :
-            self.message_response['status'] = 'OK'
+            message_response['status'] = 'OK'
         else :
-            self.message_response['status'] = 'KO'
-        self.message_response['message'] = message
-        jsondata = json.dumps(self.message_response)
+            message_response['status'] = 'KO'
+        message_response['message'] = message
+        jsondata = json.dumps(message_response)
         self.response.headers['Content-Type'] = "application/json"
         self.response.out.write(jsondata)

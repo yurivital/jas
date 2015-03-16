@@ -2,11 +2,47 @@
 
 {% block content %}
 {% autoescape false %}
-<div class="col-md-3">
+
+<script type="text/javascript">
+var ctx, 
+	jas;
+
+$(document).ready( function(){
+	ctx = document.getElementById("chart").getContext("2d");
+	jas = new JasConsole(ctx);
+
+	jas.setDateRange('201501','201503');
+	jas.loadTemperature('TEST');
+	jas.display();
+});
+
+function SetDate()
+{
+  var dateStart = $("#dateStart").attr('value');
+  var dateEnd = $("#dateEnd").attr('value');
+  jas.setDateRange(dateStart, dateEnd);
+  jas.display();
+}
+
+function Refesh()
+{
+  jas.display();
+}
+</script>
+
+<div class="col-md-4">
+<h3>Display</h3>
+<fieldset>
+<input type="date" id="dateStart" />
+- <input type="date" id="dateEnd"/>
+<div class="form-group">
+<a class="btn btn-default" href="javascript:SetDate();" role="button">Validate</a>
+ </div>
+ </fieldset>
 <h3>My devices</h3>
 <ul class="list-group">
   {% for device in devices %}
-  <li class="list-group-item"><a href="view/{{ device.device_id}}"> {{ device.name }} <span class="glyphicon glyphicon-eye-open"></span></a> 
+  <li class="list-group-item"><a href="javascript:jas.loadTemperature('{{ device.name }}');"> {{ device.name }} <span class="glyphicon glyphicon-eye-open"></span></a> 
   <a href="edit/{{ device.device_id}}"><span class="glyphicon glyphicon-cog"></span></a>
   </li>
   {% endfor %}
@@ -15,7 +51,9 @@
 </div>
 <div id="graphPort" class="col-md-8">
 <h3>Dashboard</h3>
+<canvas id="chart" class="col-md-8"></canvas>
 </div>
+
 
 
 {% endautoescape %}
