@@ -7,14 +7,10 @@ from jas.models.temperaturerecord import *
 from jas.models.device import *
 
 class GetTemperatureRecordHandler(webapp2.RequestHandler):
-    
-    
-        
-    
     def get(self, device_id, date_start, date_end):
         message_response = { 'status' : '',
                      'message': '',
-                     'request_id' : '',
+                     'requestid' : '',
                      'temperatures' : []
                      }
         
@@ -29,7 +25,7 @@ class GetTemperatureRecordHandler(webapp2.RequestHandler):
 
         temperatures = device.get_temperature(date_start, date_end)
         for temperature in temperatures:
-            message_response['temperatures'].append(  { 'sensor_id' : temperature.sensor_id,
+            message_response['temperatures'].append(  { 'sensorid' : temperature.sensor_id,
                                                              'temperature' : temperature.temperature,
                                                              'timestamp' : temperature.timestamp.strftime('%Y-%d-%m %H:%M:%S %z')})
             

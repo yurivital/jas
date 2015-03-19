@@ -10,50 +10,67 @@ var ctx,
 $(document).ready( function(){
 	ctx = document.getElementById("chart").getContext("2d");
 	jas = new JasConsole(ctx);
+	
+	// Devices
+	$('#devices>li>div>label').click(function(){
+		var deviceid = $(this).attr('data-deviceid');
+		console.log("Device ID " + deviceid);
+		jas.loadTemperature(deviceid);
+	});
+	
+	// Dates
+	$('#setDate').click(function(){
+		var dateStart = Date.parse( $("#dateStart").val());
+		var dateEnd = Date.parse( $("#dateEnd").val());
+		jas.setDateRange(dateStart, dateEnd);
 
-	jas.setDateRange('201501','201503');
-	jas.loadTemperature('TEST');
-	jas.display();
+	});
+	
+	// initialiser les dates
+	var now = new Date();
+	var today = jas.toWireString(now);
+	$("#dateStart").val( today );
+	$("#dateEnd").val( today );
+	
+	
 });
 
-function SetDate()
-{
-  var dateStart = $("#dateStart").attr('value');
-  var dateEnd = $("#dateEnd").attr('value');
-  jas.setDateRange(dateStart, dateEnd);
-  jas.display();
-}
-
-function Refesh()
-{
-  jas.display();
-}
 </script>
-
-<div class="col-md-4">
-<h3>Display</h3>
+<div class="row">
+<div class="col-md-2">
+<h3>Filters</h3>
 <fieldset>
-<input type="date" id="dateStart" />
-- <input type="date" id="dateEnd"/>
 <div class="form-group">
-<a class="btn btn-default" href="javascript:SetDate();" role="button">Validate</a>
+<label for="dateStart">From :</label>
+<input type="date" id="dateStart" class="form-control" />
+</div>
+<div class="form-group">
+<label for="dateEnd">To :</label>
+<input type="date" id="dateEnd" class="form-control"/>
+</div>
+<div class="form-group">
+<a class="btn btn-default" id="setDate" role="button">Validate</a>
  </div>
  </fieldset>
-<h3>My devices</h3>
-<ul class="list-group">
+<h3>Devices</h3>
+<ul id="devices" class="list-group">
   {% for device in devices %}
-  <li class="list-group-item"><a href="javascript:jas.loadTemperature('{{ device.name }}');"> {{ device.name }} <span class="glyphicon glyphicon-eye-open"></span></a> 
-  <a href="edit/{{ device.device_id}}"><span class="glyphicon glyphicon-cog"></span></a>
+  <li class="list-group-item">
+  <div class="btn-group" data-toggle="buttons">
+  <label class="btn btn-primary" data-deviceid="{{ device.device_id }}">
+    <input  type="checkbox" autocomplete="off" > {{ device.name }}
+  </label>
+  </div>
   </li>
   {% endfor %}
 
 </ul>
 </div>
-<div id="graphPort" class="col-md-8">
+<div id="graphPort" class="col-md-10">
 <h3>Dashboard</h3>
-<canvas id="chart" class="col-md-8"></canvas>
+<canvas id="chart" class="col-md-10"></canvas>
 </div>
-
+</div>
 
 
 {% endautoescape %}
