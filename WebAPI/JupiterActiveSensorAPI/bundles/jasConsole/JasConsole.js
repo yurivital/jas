@@ -12,6 +12,7 @@ var JasConsole = function (canvaContext, settings) {
 
     this.dateStart = new Date();
     this.dateEnd = new Date();
+    this.deviceId = null;
 
     console.log('Initializing JasConsole settings');
     this.canvasCtx = canvaContext;
@@ -119,6 +120,7 @@ JasConsole.prototype.setDateRange = function (dateStart, dateEnd) {
 // @devideId : the identity of the device
 // return : none
 JasConsole.prototype.loadTemperature = function (deviceId) {
+    this.deviceId = deviceId;
     var targetUrl = this.jasApiUrl() + this.buildJasApiAction(deviceId, this.dateStart, this.dateEnd);
     console.log('Loading Temperature : ' + targetUrl);
     this.httpRequest.open('GET', targetUrl, true);
@@ -132,16 +134,31 @@ JasConsole.prototype.display = function (message) {
 
     var temps = message.temperatures;
 
-    datasets = [];
-
+    var data= new Object();
+    data.labels = [];
+    data.datasets = [
+        {
+            label : "Test",
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,187,205,1)",
+            data : []
+        }
+    ];
 
     for(var i in temps){
-        console.log(temps[i]);
+       var temp = temps[i];
+       console.log(temp);
+       data.labels.push(temp.timestamp);
+       data.datasets[0].data.push(temp.temperature);
         // Trier les données par sensor Id
-
     }
-
-    console.log('Get data for the device and data range');
+    console.log(data);
+    this.chart.Line(data);
+   /*
     var data = {
         labels: ["January", "February", "March", "April", "May", "June", "July"],
         datasets: [
@@ -167,7 +184,8 @@ JasConsole.prototype.display = function (message) {
             }
         ]
     };
-    this.chart.Line(data);
+    */
+
 };
 
 // Represent an Exception thrown by JasConsole
