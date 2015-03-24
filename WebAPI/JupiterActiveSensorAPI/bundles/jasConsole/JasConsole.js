@@ -4,23 +4,34 @@
  */
 "use strict";
 
+// Version of the lib
+var JasConsoleVersion = "1.0.0";
+
 // Define a JasConsole constructor
 // @canvasCtx :  Id of the canvasCtx of the chart viewport
 // settings : optional, settings og the api
 // return : none
 var JasConsole = function (canvaContext, settings) {
 
+    // Filters parameters
+    // the begining of the period to display
     this.dateStart = new Date();
+    // the end of the period to display
     this.dateEnd = new Date();
+    // The device identity
     this.deviceId = null;
 
     console.log('Initializing JasConsole settings');
     this.canvasCtx = canvaContext;
-    // paramètres par défaut
+    // default parameters
     this.settings = {
+        // protocol RL schme
         jasApiScheme: "http",
+        // host of the API
         jasApiHost: "localhost",
+        // port number of the hist
         jasApiPort: 8080,
+        // template of the Get verb
         jasApiTemplateGet: "/API/GetTemperatureRecord/{deviceId}/{dateStart}/{dateEnd}"
     };
     if (typeof(settings) != 'undefined') {
@@ -32,15 +43,6 @@ var JasConsole = function (canvaContext, settings) {
     console.log('Initializing the charting engine');
     Chart.defaults.global.responsive = true;
     this.chart = new Chart(this.canvasCtx);
-
-    // init the indexDb
-    console.log('Initializing the browser db engine');
-    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-    if (!window.indexedDB) {
-        throw new JasConsoleException("Your browser doesn't support a stable version of IndexedDB. The cache will not be activated");
-    }
-
-    var request = window.indexedDB.open("JasConsole", 1);
 
     // Init the HttpRequest handler
     console.log('Initializing the ajax client');
@@ -67,6 +69,13 @@ var JasConsole = function (canvaContext, settings) {
 
     this.httpRequest.jasApi = this;
 
+    // compute the key from filter parameters
+    // Return a string representing the key
+    this.computeKey = function()
+    {
+        return  this.deviceId + this.toJasString(  this.dateStart) + this.toJasString( this.dateEnd);
+    };
+
     // Return the url of the server API from inners settings
     this.jasApiUrl = function () {
         var url = this.settings.jasApiScheme + '://' + this.settings.jasApiHost;
@@ -77,6 +86,11 @@ var JasConsole = function (canvaContext, settings) {
         return url;
     };
 
+    /// return of valorised url ressource
+    // @deviceid : String of device Identifier
+    // @datestart : date of the begining period
+    // @dateend : date of the ending period
+    // return : string
     this.buildJasApiAction = function (deviceId, dateStart, dateEnd) {
         var tmpl = this.settings.jasApiTemplateGet;
         tmpl = tmpl.replace('{deviceId}', deviceId);
@@ -85,7 +99,7 @@ var JasConsole = function (canvaContext, settings) {
         return tmpl;
     };
 
-
+  // Handler of httprequest changing states
     this.httpRequest.onreadystatechange = function () {
 
         if (this.readyState == 4) {
@@ -95,6 +109,8 @@ var JasConsole = function (canvaContext, settings) {
                 console.log(message);
 
                 if (message.status == 'OK') {
+                    var key = this.jasApi.computeKey();
+                    window.localStorage.setItem(key, JSON.stringify(  message));
                     this.jasApi.display(message);
                 }
 
@@ -121,8 +137,19 @@ JasConsole.prototype.setDateRange = function (dateStart, dateEnd) {
 // return : none
 JasConsole.prototype.loadTemperature = function (deviceId) {
     this.deviceId = deviceId;
+
+    var key = this.computeKey();
+    var message = localStorage.getItem(key);
+    if(message != null)
+    {
+        console.log('Loading Temperature from cache');
+        message = JSON.parse(message);
+        console.log(message);
+        return this.display(message);
+    }
+
     var targetUrl = this.jasApiUrl() + this.buildJasApiAction(deviceId, this.dateStart, this.dateEnd);
-    console.log('Loading Temperature : ' + targetUrl);
+    console.log('Loading Temperature from server : ' + targetUrl);
     this.httpRequest.open('GET', targetUrl, true);
     this.httpRequest.send();
 };
@@ -138,7 +165,7 @@ JasConsole.prototype.display = function (message) {
     data.labels = [];
     data.datasets = [
         {
-            label : "Test",
+            label : this.deviceId,
             fillColor: "rgba(151,187,205,0.2)",
             strokeColor: "rgba(151,187,205,1)",
             pointColor: "rgba(151,187,205,1)",
