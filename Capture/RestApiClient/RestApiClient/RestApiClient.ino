@@ -1,13 +1,13 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <String.h>
-#include <SD.h>
+
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 // REST Server
-char server[] = "www.google.com";
+String server = "https://jupiteractivesensor.appspot.com";
 String action = "/API/SetTemperatureRecord/TEST";
 String payLoad = "[{ 'sensorID' : 'SENSOR01', 'temperature': 12.3, 'timestamp' : '' } ]";
 // Set the static IP address to use if the DHCP fails to assign
@@ -38,7 +38,7 @@ void loop(){
     Serial.println("connected");
     // Make a HTTP request:
     client.println("POST " + action  + " HTTP/1.1");
-    client.println("Accept-Encoding: text,plain");
+    client.println("Accept: text/plain");
     client.println("Content-Type: application/json");
     client.println("Content-Length: " + payLoad.length());
     client.println("Connection: close");
@@ -47,6 +47,13 @@ void loop(){
     client.println("");
     client.println(payLoad); 
     client.println();
+    
+   if (client.available()) {
+    char c = client.read();
+    Serial.print(c);
+  }
+    
+    client.stop();
     
   } 
 }
