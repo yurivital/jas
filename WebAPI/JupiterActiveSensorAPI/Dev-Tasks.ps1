@@ -5,7 +5,7 @@ Param(
 
 if($cleanup){
  
- $ExtToClean = ("*.html~","*.py~","*.yaml~", "*.pyc")
+ $ExtToClean = ("*.html~","*.py~","*.yaml~", "*.pyc", "*.js~")
 
  foreach ( $filter in $ExtToClean){
    Get-ChildItem -Filter $filter -Recurse | % { 
