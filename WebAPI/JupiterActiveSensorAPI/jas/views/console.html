@@ -9,7 +9,21 @@ var ctx,
 
 $(document).ready( function(){
 	ctx = document.getElementById("chart").getContext("2d");
+	
+	var settings = {
+        // protocol RL schme
+        jasApiScheme: "https",
+        // host of the API
+        jasApiHost: "jupiteractivesensor.appspot.com",
+        // port number of the hist
+        jasApiPort: 443,
+        // template of the Get verb
+        jasApiTemplateGet: "/API/GetTemperatureRecord/{deviceId}/{dateStart}/{dateEnd}"
+    };
 	jas = new JasConsole(ctx);
+	
+	jas.settings = settings;
+	
 	
 	// Devices
 	$('#devices>li>div>label').click(function(){
