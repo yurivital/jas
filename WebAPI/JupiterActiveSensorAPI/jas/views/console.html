@@ -21,8 +21,10 @@ $(document).ready( function(){
         jasApiTemplateGet: "/API/GetTemperatureRecord/{deviceId}/{dateStart}/{dateEnd}"
     };
 	jas = new JasConsole(ctx);
-	
-	jas.settings = settings;
+
+	if(document.URL.search("localhost") == -1){
+		jas.settings = settings;
+	}
 	
 	
 	// Devices
