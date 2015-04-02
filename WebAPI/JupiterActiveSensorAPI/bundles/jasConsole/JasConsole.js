@@ -184,6 +184,7 @@ JasConsole.prototype.display = function (message) {
         // Trier les données par sensor Id
     }
     console.log(data);
+    this.chart.clear();
     this.chart.Line(data);
    /*
     var data = {
