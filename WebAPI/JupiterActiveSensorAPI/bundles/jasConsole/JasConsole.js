@@ -5,7 +5,7 @@
 "use strict";
 
 // Version of the lib
-var JasConsoleVersion = "1.0.0";
+var JasConsoleVersion = "1.0.2";
 
 // Define a JasConsole constructor
 // @canvasCtx :  Id of the canvasCtx of the chart viewport
@@ -43,6 +43,7 @@ var JasConsole = function (canvaContext, settings) {
     console.log('Initializing the charting engine');
     Chart.defaults.global.responsive = true;
     this.chart = new Chart(this.canvasCtx);
+    this.lineInstance = null;
 
     // Init the HttpRequest handler
     console.log('Initializing the ajax client');
@@ -184,8 +185,10 @@ JasConsole.prototype.display = function (message) {
         // Trier les données par sensor Id
     }
     console.log(data);
-    this.chart.clear();
-    this.chart.Line(data);
+    if(this.lineInstance != null){
+        this.lineInstance.clear();
+    }
+    this.lineInstance = this.chart.Line(data);
    /*
     var data = {
         labels: ["January", "February", "March", "April", "May", "June", "July"],
