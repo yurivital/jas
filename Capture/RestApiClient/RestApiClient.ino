@@ -7,7 +7,7 @@
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 // REST Server
-String server = "jupiteractivesensor.appspot.com";
+char server[] = "jupiteractivesensor.appspot.com";
 String action = "/API/SetTemperatureRecord/TEST";
 String payLoad = "[{ 'sensorID' : 'SENSOR01', 'temperature': 12.3, 'timestamp' : '' } ]";
 // Set the static IP address to use if the DHCP fails to assign
@@ -43,7 +43,8 @@ void loop(){
     client.println("Content-Length: " + payLoad.length());
     client.println("Connection: close");
     client.println("User-Agent: Arduino-HttpJasClient/1.0");
-    client.println("Host: "+ server);
+    client.print("Host: ");
+    client.println(server);
     client.println("");
     client.println(payLoad); 
     client.println();
