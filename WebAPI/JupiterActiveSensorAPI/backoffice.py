@@ -14,4 +14,4 @@ app = webapp2.WSGIApplication([
     webapp2.Route(r'/Admin/edit/<device_id>', handler=EditDeviceHandler, name='editDevice'),
     webapp2.Route(r'/Admin/delete/<device_id>', handler=DeleteDeviceHandler, name='deleteDevice'),
     webapp2.Route(r'/Admin/create/', handler=CreateDeviceHandler, name='createDevice')
-   ], debug=True)
+], debug=True)
