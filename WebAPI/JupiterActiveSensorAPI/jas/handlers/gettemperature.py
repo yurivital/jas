@@ -18,7 +18,7 @@ class GetTemperatureRecordHandler(webapp2.RequestHandler):
         device = Device.query_device_id(device_key, device_id)
 
         if device is None :
-            return write_response(message_response, False, "the device is unknow device");
+            return self.write_response(message_response, False, "the device is unknow device");
         
         date_start = datetime.datetime.strptime(date_start,'%Y%m%d')
         date_end = datetime.datetime.strptime(date_end,'%Y%m%d')

@@ -15,7 +15,7 @@ class SetTemperatureRecordHandler(ViewHandler):
         request_id = str(uuid.uuid1())
         logging.info("SetRecord for device {0} - request {1}".format(device_id,request_id))
         self.response.headers['Content-Type'] = "application/json"
-        device_ok = Device.is_active_registred_device(device_key, device_id)
+        device_ok = Device.is_active_registered_device(device_key, device_id)
         if (device_ok  == False):
             msg_error = { "status" : "KO",
                           "message" : "The device is not registred and active",
