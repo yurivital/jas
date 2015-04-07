@@ -1,10 +1,6 @@
-import webapp2
-import logging
-import jinja2
-
 from google.appengine.api import users
 from jas.handlers.viewhandler import *
-from jas.models.device import *
+from jas.models.hardware import *
 
 class MainConsoleHandler(ViewHandler):
     def get(self):

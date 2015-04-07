@@ -4,7 +4,7 @@ import jinja2
 
 from google.appengine.api import users
 from jas.handlers.viewhandler import *
-from jas.models.device import *
+from jas.models.hardware import *
 """ Handler de la page principale d'administration """
 class MainAdminHandler(ViewHandler):
     """ Affiche la liste des peripheriques declares """

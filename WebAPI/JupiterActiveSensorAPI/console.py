@@ -2,8 +2,8 @@
 
 import webapp2
 import logging
-from jas.handlers.associatedevice import *
-from jas.handlers.mainconsole import *
+from jas.handlers.device import *
+from jas.handlers.console import *
 
 logging.info('Console handler Registration')
 

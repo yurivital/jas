@@ -9,6 +9,7 @@
           <option value="jas.models.device.*" />
           <option value="jas.models.temperaturerecord.google" />
           <option value="jas.models.temperaturerecord.*" />
+          <option value="jas.handlers.associatedevice.google" />
         </list>
       </option>
     </inspection_tool>

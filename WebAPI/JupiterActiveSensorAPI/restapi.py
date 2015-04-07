@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 import webapp2
 import logging
-from jas.handlers.settemperature import SetTemperatureRecordHandler
-from jas.handlers.gettemperature import GetTemperatureRecordHandler
-from jas.handlers.docapi import DocApiHandler
+from jas.handlers.apisensor import GetTemperatureRecordHandler, SetTemperatureRecordHandler
+from jas.handlers.apidocumentation import DocApiHandler
 
 logging.info('Handlers Registration for API')
 
