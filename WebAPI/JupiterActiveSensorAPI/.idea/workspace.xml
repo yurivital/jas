@@ -5,27 +5,8 @@
     <option name="CUSTOM_SCOPE_NAME" value="Open Files" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="db13ef4c-716f-46dd-b72d-b3931447e43e" name="Default" comment="fix : code analysis on models">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/jas/handlers/device.py" />
-      <change type="DELETED" beforePath="C:\Forgery\JupiterActiveSensor\WebAPI\JupiterActiveSensorAPI\jas\handlers\associatedevice.py" afterPath="" />
-      <change type="DELETED" beforePath="C:\Forgery\JupiterActiveSensor\WebAPI\JupiterActiveSensorAPI\jas\handlers\createdevice.py" afterPath="" />
-      <change type="DELETED" beforePath="C:\Forgery\JupiterActiveSensor\WebAPI\JupiterActiveSensorAPI\jas\handlers\deletedevice.py" afterPath="" />
-      <change type="DELETED" beforePath="C:\Forgery\JupiterActiveSensor\WebAPI\JupiterActiveSensorAPI\jas\handlers\editdevice.py" afterPath="" />
-      <change type="DELETED" beforePath="C:\Forgery\JupiterActiveSensor\WebAPI\JupiterActiveSensorAPI\jas\handlers\settemperature.py" afterPath="" />
-      <change type="DELETED" beforePath="C:\Forgery\JupiterActiveSensor\WebAPI\JupiterActiveSensorAPI\jas\models\temperaturerecord.py" afterPath="" />
-      <change type="MOVED" beforePath="C:\Forgery\JupiterActiveSensor\WebAPI\JupiterActiveSensorAPI\jas\handlers\docapi.py" afterPath="$PROJECT_DIR$/jas/handlers/apidocumentation.py" />
-      <change type="MOVED" beforePath="C:\Forgery\JupiterActiveSensor\WebAPI\JupiterActiveSensorAPI\jas\handlers\gettemperature.py" afterPath="$PROJECT_DIR$/jas/handlers/apisensor.py" />
-      <change type="MOVED" beforePath="C:\Forgery\JupiterActiveSensor\WebAPI\JupiterActiveSensorAPI\jas\handlers\mainadmin.py" afterPath="$PROJECT_DIR$/jas/handlers/admin.py" />
-      <change type="MOVED" beforePath="C:\Forgery\JupiterActiveSensor\WebAPI\JupiterActiveSensorAPI\jas\handlers\mainconsole.py" afterPath="$PROJECT_DIR$/jas/handlers/console.py" />
-      <change type="MOVED" beforePath="C:\Forgery\JupiterActiveSensor\WebAPI\JupiterActiveSensorAPI\jas\models\device.py" afterPath="$PROJECT_DIR$/jas/models/hardware.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backoffice.py" afterPath="$PROJECT_DIR$/backoffice.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console.py" afterPath="$PROJECT_DIR$/console.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jas/views/editdevice.html" afterPath="$PROJECT_DIR$/jas/views/editdevice.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Test/API/jas api" afterPath="$PROJECT_DIR$/../Test/API/jas api" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/restapi.py" afterPath="$PROJECT_DIR$/restapi.py" />
+    <list default="true" id="db13ef4c-716f-46dd-b72d-b3931447e43e" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bundles/jasConsole/.idea/workspace.xml" afterPath="$PROJECT_DIR$/bundles/jasConsole/.idea/workspace.xml" />
     </list>
     <ignored path="JupiterActiveSensorAPI.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -103,7 +84,7 @@
       <file leaf-file-name="editdevice.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/jas/views/editdevice.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.717608" vertical-offset="260" max-vertical-offset="663">
+            <state vertical-scroll-proportion="1.0406977" vertical-offset="118" max-vertical-offset="663">
               <caret line="28" column="7" selection-start-line="28" selection-start-column="7" selection-end-line="28" selection-end-column="7" />
               <folding />
             </state>
@@ -537,7 +518,13 @@
       <option name="project" value="LOCAL" />
       <updated>1428041459432</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Feature : Big refactoring to be more pythonic">
+      <created>1428387094340</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1428387094340</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -562,22 +549,22 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.234375" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32843137" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298791" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952693" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.234375" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39967373" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39967373" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.60032624" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -603,7 +590,8 @@
     </option>
     <MESSAGE value="fix : code analysis on app handlers&#10;" />
     <MESSAGE value="fix : code analysis on models" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix : code analysis on models" />
+    <MESSAGE value="Feature : Big refactoring to be more pythonic" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feature : Big refactoring to be more pythonic" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -940,7 +928,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/jas/views/editdevice.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.717608" vertical-offset="260" max-vertical-offset="663">
+        <state vertical-scroll-proportion="1.0406977" vertical-offset="118" max-vertical-offset="663">
           <caret line="28" column="7" selection-start-line="28" selection-start-column="7" selection-end-line="28" selection-end-column="7" />
           <folding />
         </state>
