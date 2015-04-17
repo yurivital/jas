@@ -20,7 +20,10 @@
 #define W5200_CS  10
 #define SDCARD_CS 4
 
-char newline = 10; 
+char crlf[] = { 
+  13, 10};
+
+String  newline =  String(crlf); 
 
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
@@ -29,17 +32,23 @@ byte mac[] = {
 
 char serverName[] = "jupiteractivesensor.appspot.com";
 String action = "/API/SetTemperatureRecord/TEST01";
-String payLoad = "[{ 'sensorID' : 'SENSOR01', 'temperature': 12.3, 'timestamp' : '' } ]";
+String payLoad = "[ { \"sensorId\" : \"TEMP01\", \"temperature\" : 12.3, \"timestamp\" : \"\" } ]";
 boolean ethernetReady = false;
+// state of the connection last time through the main loop
+const unsigned long waitingResponse = 1000;
+
+
 // Initialize the Ethernet client library
 // with the IP address and port of the server 
 // that you want to connect to (port 80 is default for HTTP):
 EthernetClient client;
 
+
+
 void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(115200);
-  Serial.println("Setup");
+  Serial.println("RestApi Test 1.0 - Setup");
 
   pinMode(SDCARD_CS,OUTPUT);
   digitalWrite(SDCARD_CS,HIGH);//Deselect the SD card
@@ -54,26 +63,29 @@ void setup() {
   // give the Ethernet shield a second to initialize:
   delay(1000);
   ethernetReady = true;
-  Serial.print("IP Adresss : ")
-    Serial.println(Ethernet.localIP());
+  Serial.print("IP Adresss : ");
+  Serial.println(Ethernet.localIP());
 }
 
 // Send the HttpResquest to the JAS Web Api server
 void postRequest()
 {
   String req = "POST " + action  + " HTTP/1.1" + newline;
-  req += "Accept: text/plain" + newline;
-  req += "Content-Type: application/json" + newline;
-  req += "Content-Length: " + String(payLoad.length()) + newline;
-  req += "User-Agent: Arduino-JasClient/1.0" + newline;
-  req += "Host: " + String(serverName) + newline + newline;
+  //req += ( "Accept: text/plain" + newline);
+  req += ("Content-Type: application/json" + newline);
+  req += ("Content-Length: " + String(payLoad.length()) + newline);
+  req += ("User-Agent: Arduino-JasClient/1.0" + newline);
+  req += ("Host: " + String(serverName) + newline);
+  req += ("Connection: Keep-Alive" + newline + newline);
   req += payLoad;
 
   Serial.println("Sending request :");
-  Serial.println(req);
   client.println(req);
-  client.println();
+  Serial.println(req);
+
+
 }
+
 
 void loop()
 {
@@ -84,15 +96,27 @@ void loop()
     // Make a HTTP request:
     postRequest();
   } 
+  else if(ethernetReady) {
+    Serial.println("connection failed");
+  }
   else {
     // if you didn't get a connection to the server:
-    Serial.println("connection failed or ethernet nor read");
+    Serial.println("Ethernet not ready");
     return;
   }
 
   // if there are incoming bytes available 
   // from the server, read them and print them:
-  if (client.available()) {
+  Serial.println("Waiting Response from server");
+  unsigned long lastConnectionTime = millis();
+  boolean canWait = true;
+  while( canWait  ) {
+    canWait = millis() - lastConnectionTime < waitingResponse || !client.available();
+    Serial.println("Can wait : " + canWait ? "True" : "False"); 
+  }
+  
+  if(!client.available()) 
+  {
     Serial.println("Response :");
     while(char c = client.read() != NULL){
       Serial.print(c);
@@ -100,3 +124,6 @@ void loop()
   }
   client.stop();
 }
+
+
+
