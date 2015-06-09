@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="5d16c5a3-bb4d-4f28-9933-52817f9ebbf0" name="General" linkedPackageId="b4ce3705-938b-40fd-b010-131eabd9df51" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <appliedStereotypesInternal>
+    <stereotypeInstance Id="5b1f7094-558c-4490-a219-19587b732ca1" name="framework" profile="StandardProfileL2">
+      <elementDefinition Id="6a99d8d2-afda-4b84-91f2-d14b687af802" />
+    </stereotypeInstance>
+  </appliedStereotypesInternal>
+  <package Id="b4ce3705-938b-40fd-b010-131eabd9df51" name="OneWireCapute.Model">
+    <elementDefinition Id="5d426c34-62dc-4568-a80e-552872913ca9" />
+    <profileInstances>
+      <packageHasProfileInstances Id="3ef7281c-e011-4dd1-9214-842cf15619a8">
+        <profileInstance Id="90d1f447-bdf8-4140-a555-fce48b2f616d" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="93af4eb2-0aca-47b7-99a0-6fc17159367a">
+        <profileInstance Id="848dc09a-4119-4ab6-8b66-d6d890b0a77b" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+    </profileInstances>
+  </package>
+</logicalClassDesignerModel>

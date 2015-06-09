@@ -1,0 +1,22 @@
+﻿ if (ow.Reset())
+                {
+                    ow.WriteByte(0xCC);     // Skip ROM
+                    ow.WriteByte(0x44);     // Start temperature conversion
+
+                    while (ow.ReadByte() == 0)
+                        ;   // wait while busy
+
+                    ow.Reset();
+                    ow.WriteByte(0xCC);     // skip ROM
+                    ow.WriteByte(0xBE);     // Read Scratchpad
+
+                    temperature = ow.ReadByte();       // LSB 
+                    temperature |= (ushort)(ow.ReadByte() << 8); // MSB
+
+                    Debug.Print("Temperature: " + temperature / 16);
+                    Thread.Sleep(1000);
+                }
+                else
+                {
+                    Debug.Print("Device is not detected.");
+                }
