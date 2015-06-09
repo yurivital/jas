@@ -6,11 +6,12 @@ Jupiter Active Sensor
  1. Arduino based capture system 
  2. Arduino Uno + Ethernet Shield
 
-## Storage
- 1. Expose a rest API
- 2. Store in a relational db (?)
+## WebAPI
+ 1. API : Expose a rest API
+ 2. Console : Expose a dashboard to an user
+ 3. Console : User can associate a capture system to their account
+ 4. Admin : Provide a backend for super admin tasks  
 
-## Front-end
- 1. Expose a dashboard to an user
- 2. User can associate a capture system to their account
- 3. Data are displayed with a chart (Google Chart API)
+## Test
+ 1. SOAP UI Test
+ 2. Selenium Test 
