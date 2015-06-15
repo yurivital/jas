@@ -12,21 +12,60 @@ using Microsoft.SPOT.Hardware;
 
 namespace GHIElectronics.NETMF.FEZ
 {
+    /// <summary>
+    /// Vendor specific library
+    /// </summary>
     public static partial class FEZ_Components
     {
+        /// <summary>
+        /// Manage a touch LCD screen
+        /// </summary>
         public class FEZTouch : IDisposable, JasCapture.Form.IDrawer
         {
+            /// <summary>
+            /// Configuration for the LCD screen
+            /// </summary>
             public class LCDConfiguration
             {
-
+                /// <summary>
+                /// Data wiring
+                /// </summary>
                 internal Cpu.Pin[] dataPins;
+                /// <summary>
+                /// Write operation pin
+                /// </summary>
                 internal Cpu.Pin writePin;
+                /// <summary>
+                /// Read operation pin
+                /// </summary>
                 internal Cpu.Pin readPin;
+                /// <summary>
+                /// device select pin
+                /// </summary>
                 internal Cpu.Pin chipSelect;
+                /// <summary>
+                /// Reset pin
+                /// </summary>
                 internal Cpu.Pin reset;
+                /// <summary>
+                /// 
+                /// </summary>
                 internal Cpu.Pin RS;
+                /// <summary>
+                /// backlight intensity control pin
+                /// </summary>
                 internal Cpu.Pin backLight;
 
+                /// <summary>
+                /// Create a new instance of <see cref="LCDConfiguration"/>
+                /// </summary>
+                /// <param name="reset"></param>
+                /// <param name="chipSelect"></param>
+                /// <param name="RS"></param>
+                /// <param name="backLight"></param>
+                /// <param name="dataPins"></param>
+                /// <param name="writePin"></param>
+                /// <param name="readPin"></param>
                 public LCDConfiguration(FEZ_Pin.Digital reset, FEZ_Pin.Digital chipSelect, FEZ_Pin.Digital RS, FEZ_Pin.Digital backLight, FEZ_Pin.Digital[] dataPins, FEZ_Pin.Digital writePin, FEZ_Pin.Digital readPin)
                 {
                     this.dataPins = new Cpu.Pin[8];
@@ -42,6 +81,9 @@ namespace GHIElectronics.NETMF.FEZ
                 }
             }
 
+            /// <summary>
+            /// Embed the configuratio for touch capability
+            /// </summary>
             public class TouchConfiguration
             {
                 internal SPI.SPI_module channel;

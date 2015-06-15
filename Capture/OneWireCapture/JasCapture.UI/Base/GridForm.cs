@@ -58,7 +58,7 @@ namespace JasCapture.Form.Base
         /// <summary>
         /// Draw the Grid
         /// </summary>
-        /// <param name="screen"></param>
+        /// <param name="screen">Screen device</param>
         public override void Paint(IDrawer screen)
         {
             base.Paint(screen);
