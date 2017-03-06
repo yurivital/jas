@@ -1,30 +1,30 @@
 
 /*
-Jupiter Active Sensor
- JAS Capture
+  Jupiter Active Sensor
+  JAS Capture
 
- SCHEMATIC :
- Enable Debug : connect GRD to pin 1
- Enable Serial : connext GRD to pin 0
- OneWire Newtwork :
- GRND, Vcc = +3.3V,  DATA attached on pin 8 with 4.7k resistor (D
- OneWire Activity Led : pin 13 (builtin Led)
+  SCHEMATIC :
+  Enable Debug : connect GRD to pin 1
+  Enable Serial : connext GRD to pin 0
+  OneWire Newtwork :
+  GRND, Vcc = +3.3V,  DATA attached on pin 8 with 4.7k resistor (D
+  OneWire Activity Led : pin 13 (builtin Led)
 
- Ethernet shield :
- attached to pins 10, 11, 12, 13
+  Ethernet shield :
+  attached to pins 10, 11, 12, 13
 
- SD Card reader :
- attacher to pin 4
+  SD Card reader :
+  attacher to pin 4
 
  ***********************
  ***  Changes notes  ***
  ***********************
- - version 0.1 : First Version
- */
+  - version 0.1 : First Version
+*/
 
 #include <OneWire.h>
 #include <SPI.h>
-#include <EthernetV2_0.h>
+#include <Ethernet.h>
 #include <String.h>
 
 // ********** Programm ressources **********
@@ -46,25 +46,25 @@ char lastMessage = 255;
 boolean enableDebug = false;
 const int debugPinSelect = 1;
 /*
- Messages :
- 0    Initialization
- 1    OneWire devices found
- 2    OneWire CRC correct
- 3    Ask for conversion
- 4    Entering int the loop
- 5    owGetDevice
- 6    Read Temperature
- 50   Configuring Ethernet with the MAC adresse
- 51   Connecting the server
- 52   Sending Http request
- 100  Not any OneWire devices found
- 101  OneWire CRC not correct
- 102  Device number exceed the number of found devices
- 150  Failed to configure Ethernet using DHCP
- 151  Connection failed
- 152  Ethernet not ready
- 254  KernelPanic - Exit of the main loop
- */
+  Messages :
+  0    Initialization
+  1    OneWire devices found
+  2    OneWire CRC correct
+  3    Ask for conversion
+  4    Entering int the loop
+  5    owGetDevice
+  6    Read Temperature
+  50   Configuring Ethernet with the MAC adresse
+  51   Connecting the server
+  52   Sending Http request
+  100  Not any OneWire devices found
+  101  OneWire CRC not correct
+  102  Device number exceed the number of found devices
+  150  Failed to configure Ethernet using DHCP
+  151  Connection failed
+  152  Ethernet not ready
+  254  KernelPanic - Exit of the main loop
+*/
 
 // ********** Hardware Ressources **********
 
@@ -78,9 +78,9 @@ const int serialPinSelect = 0;
 // OneWire Network pin attachment
 OneWire owNetwork(8); // on pin 8 with  4.7k resistor)
 //  One Wire Network Capacity
-const int owNetworkCapacity = 100;
+const char owNetworkCapacity = 5;
 // Number of One Wire devices found
-int owNbDevices = 0;
+char owNbDevices = 0;
 // Adresse of the One Wire Network devices
 byte owAddresses[owNetworkCapacity][8];
 // raw Data buffer
@@ -124,15 +124,15 @@ String httpPayload = "{ \"sensorId\" : \"$SENSORID$\", \"temperature\" : $TEMP$,
 void setup()
 {
   pinMode(serialPinSelect, INPUT_PULLUP);
-  
+
   enableSerial = ! digitalRead(serialPinSelect);
   enableDebug = ! digitalRead(debugPinSelect);
-  if(enableSerial)
+  if (enableSerial)
   {
     Serial.begin(serialBauds);
   }
   pinMode(13, OUTPUT);
-  
+
   printVersion();
   logMessage(0, TRUE);
   ethSetup();
@@ -152,7 +152,7 @@ void loop()
   // Measure temperature
   owLoop();
   // If sensor founds, send data to Rest API server
-  if(OneWireDeviceFound)
+  if (OneWireDeviceFound)
   {
     ethLoop();
   }
@@ -185,9 +185,9 @@ void logMessage(char errorMsg, boolean debug) {
     return;
   }
   // Sortir les log debug sur configuration
-  if(!enableDebug && debug)
+  if (!enableDebug && debug)
   {
-   return; 
+    return;
   }
   if (errorMsg == lastMessage)
   {
@@ -213,7 +213,7 @@ void logBuffer(byte* buff, long len)
     return;
   }
 
-  Serial.write(' BUFFER = ');
+  Serial.write("BUFFER = ");
   for (long i = 0; i < len; i++)
   {
     Serial.write(' ');
@@ -375,7 +375,7 @@ void owReadTemperature() {
 // Setup Handler for the Ethernet card
 void ethSetup()
 {
-  httpAction.replace("$DEVICEID$","toto");
+  httpAction.replace("$DEVICEID$", "toto");
   pinMode(SDCARD_CS, OUTPUT);
   digitalWrite(SDCARD_CS, HIGH); //Deselect the SD card
   // start the Ethernet connection:
@@ -417,7 +417,7 @@ void ethLoop() {
 // Send the HttpResquest to the JAS Web Api server
 void postRequest()
 {
-   String req = "POST " + httpAction  + " HTTP/1.1" + httpNewline;
+  String req = "POST " + httpAction  + " HTTP/1.1" + httpNewline;
   //req += ( "Accept: text/plain" + newline);
   req += ("Content-Type: application/json" + httpNewline);
   req += ("Content-Length: " + String(httpPayload.length()) + httpNewline);
@@ -432,14 +432,14 @@ void postRequest()
     String sensorId = "";
     byte* currentAdresse = owGetAdresse(i);
     float temperature = owMeasuredTemperature[i];
-    for(int j =0 ; j < 8 ;j++)
+    for (int j = 0 ; j < 8 ; j++)
     {
-      sensorId += String(currentAdresse[j],HEX);
+      sensorId += String(currentAdresse[j], HEX);
     }
-  
+
     payload.replace("$SENSORID$",  sensorId );
     payload.replace("$TEMP$", String(temperature));
-    
+
     req += payload;
   }
   req += "]";
