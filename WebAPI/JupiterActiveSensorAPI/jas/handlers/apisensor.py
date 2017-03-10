@@ -29,7 +29,7 @@ class GetTemperatureRecordHandler(webapp2.RequestHandler):
                                                              'temperature' : temperature.temperature,
                                                              'timestamp' : temperature.timestamp.strftime('%Y-%d-%m %H:%M:%S %z')})
             
-        return self.write_response(message_response, True, '');
+        return self.write_response(message_response, True, '')
 
     def write_response(self, message_response, success, message):
         """ output the message buffer"""
@@ -57,24 +57,25 @@ class SetTemperatureRecordHandler(webapp2.RequestHandler):
                          "message": "The device is not registered and active",
                          "requestId": request_id
                          }
-            logging.info(msg_error)
+            logging.warn(msg_error)
             return self.response.out.write(json.dumps(msg_error))
         try:
             temperature_data = json.loads(self.request.body)
         except ValueError:
             msg_error = {"status": "KO",
                          "message": "unable to convert JSON data",
-                         "requestId": request_id
+                         "requestId": request_id,
+                         "body" : self.request.body,
                          }
-            logging.info(msg_error)
-            return self.response.out.write(json.dumps(msg_error));
+            logging.error(msg_error)
+            return self.response.out.write(json.dumps(msg_error))
         except:
             msg_error = {"status": "KO",
                          "message": "unexpected error",
                          "requestId": request_id
                          }
             logging.info(msg_error)
-            return self.response.out.write(json.dumps(msg_error));
+            return self.response.out.write(json.dumps(msg_error))
         device = Device.query_device_id(device_key, device_id)
         nb_records = 0
         status = "OK"

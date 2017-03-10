@@ -24,7 +24,7 @@
 
 #include <OneWire.h>
 #include <SPI.h>
-#include <Ethernet.h>
+#include <EthernetV2_0.h>
 #include <String.h>
 
 // ********** Programm ressources **********
@@ -33,12 +33,13 @@ const char version_major = '0';
 // Minor version
 const char version_minor = '1';
 // Reviosion letter
-const char version_revision = 'a';
+const char version_revision = 'b';
 // Device Identification number
 const String deviceId = "TEST01";
 // TimeStamp of the previous loop passage
 unsigned long lastLoop = 0;
-
+// state of the connection last time through the main loop
+const unsigned long waitingResponse = 1000;
 // Time in millisecond between two loops
 unsigned int loopDelay = 30000;
 // ********** Logging  Ressources **********
@@ -71,7 +72,7 @@ const int debugPinSelect = 1;
 // *** SERIAL
 // Speed transmition for serial com
 const long serialBauds = 9600;
-boolean enableSerial  = true;
+boolean enableSerial  = false;
 const int serialPinSelect = 0;
 
 // *** ONE WIRE
@@ -115,8 +116,8 @@ String  httpNewline =  String((char[]) {
                              );
 // Server adrress Name
 char httpServerName[] = "jupiteractivesensor.appspot.com";
-String httpAction = "/API/SetTemperatureRecord/$DEVICEID$";
-String httpPayload = "{ \"sensorId\" : \"$SENSORID$\", \"temperature\" : $TEMP$, \"timestamp\" : \"\" }";
+String httpAction = "/API/SetTemperatureRecord/" + deviceId;
+String httpPayload = "";
 
 // ********** Programm Control **********
 
@@ -125,8 +126,8 @@ void setup()
 {
   pinMode(serialPinSelect, INPUT_PULLUP);
 
-  enableSerial = ! digitalRead(serialPinSelect);
-  enableDebug = ! digitalRead(debugPinSelect);
+  enableSerial = false; //! digitalRead(serialPinSelect);
+  enableDebug = false;// ! digitalRead(debugPinSelect);
   if (enableSerial)
   {
     Serial.begin(serialBauds);
@@ -237,7 +238,11 @@ void owLoop()
   digitalWrite(owActivityLed, HIGH);
   owReadTemperature();
   digitalWrite(owActivityLed, LOW);
-  for (int i = 0; i < owNbDevices && enableSerial ; i++)
+  if(!enableSerial)
+  {
+    return;
+  }
+  for (int i = 0; i < owNbDevices ; i++)
   {
     Serial.print("DEVICE ");
     Serial.print(i);
@@ -375,7 +380,7 @@ void owReadTemperature() {
 // Setup Handler for the Ethernet card
 void ethSetup()
 {
-  httpAction.replace("$DEVICEID$", "toto");
+  
   pinMode(SDCARD_CS, OUTPUT);
   digitalWrite(SDCARD_CS, HIGH); //Deselect the SD card
   // start the Ethernet connection:
@@ -412,23 +417,42 @@ void ethLoop() {
     logMessage(152, 0);
     return;
   }
+
+  // if there are incoming bytes available 
+  // from the server, read them and print them:
+  if(enableSerial)
+  {
+    Serial.println("Waiting Response from server");   
+  }
+  unsigned long lastConnectionTime = millis();
+  boolean canWait = true;
+  while( canWait  ) {
+    canWait = (millis() - lastConnectionTime) < waitingResponse && !ethClient.available();
+    if(enableSerial)
+    {
+      Serial.println("Can wait : " + canWait ? "True" : "False"); 
+    }
+  }
+/*
+  if(enableSerial &&  ethClient.available()) 
+  {
+    Serial.println("Response :");
+    while(char c = ethClient .read() != NULL){
+      Serial.print(c);
+    }
+  }
+  */
+  ethClient.stop();
 }
 
 // Send the HttpResquest to the JAS Web Api server
 void postRequest()
 {
-  String req = "POST " + httpAction  + " HTTP/1.1" + httpNewline;
-  //req += ( "Accept: text/plain" + newline);
-  req += ("Content-Type: application/json" + httpNewline);
-  req += ("Content-Length: " + String(httpPayload.length()) + httpNewline);
-  req += ("User-Agent: Arduino-JasClient/1.0" + httpNewline);
-  req += ("Host: " + String(httpServerName) + httpNewline);
-  req += ("Connection: Keep-Alive" + httpNewline + httpNewline);
-  req +=  "["  ;
 
+  httpPayload = "[";
+  
   for (int i; i < owNbDevices; i++)
   {
-    String payload =  httpPayload;
     String sensorId = "";
     byte* currentAdresse = owGetAdresse(i);
     float temperature = owMeasuredTemperature[i];
@@ -437,12 +461,25 @@ void postRequest()
       sensorId += String(currentAdresse[j], HEX);
     }
 
-    payload.replace("$SENSORID$",  sensorId );
-    payload.replace("$TEMP$", String(temperature));
-
-    req += payload;
+    httpPayload += "{ \"sensorId\" : \"" + sensorId + "\", \"temperature\" : " + temperature + ", \"timestamp\" : \"\" }";
+    if( i > 0 && i <owNbDevices -1)
+    {
+      httpPayload += ",";
+    }
   }
-  req += "]";
+  httpPayload += "]";
+
+  String req = "POST " + httpAction  + " HTTP/1.1" + httpNewline;
+  //req += ( "Accept: text/plain" + newline);
+  req += ("Content-Type: application/json; charset=US-ASCII" + httpNewline);
+  req += "Accept-Charset: US-ASCII" + httpNewline;
+  req += ("Content-Length: " + String(httpPayload.length()) + httpNewline);
+  
+  req += ("User-Agent: Arduino-JasClient/1.0" + httpNewline);
+  req += ("Host: " + String(httpServerName) + httpNewline);
+  req += ("Connection: Keep-Alive" + httpNewline + httpNewline);
+  req += httpPayload;
+  
   logMessage(52, 1);
   ethClient.println(req);
   if (enableSerial) {
