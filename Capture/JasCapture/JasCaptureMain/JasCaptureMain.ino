@@ -1,3 +1,8 @@
+#include <DhcpV2_0.h>
+#include <DnsV2_0.h>
+#include <EthernetV2_0.h>
+#include <utilV2_0.h>
+
 
 /*
   Jupiter Active Sensor
@@ -24,7 +29,6 @@
 
 #include <OneWire.h>
 #include <SPI.h>
-#include <EthernetV2_0.h>
 #include <String.h>
 
 // ********** Programm ressources **********
@@ -38,10 +42,10 @@ const char version_revision = 'b';
 const String deviceId = "TEST01";
 // TimeStamp of the previous loop passage
 unsigned long lastLoop = 0;
-// state of the connection last time through the main loop
+// response timeout
 const unsigned long waitingResponse = 1000;
 // Time in millisecond between two loops
-unsigned int loopDelay = 30000;
+unsigned int loopDelay = 300000; // 5 minutes
 // ********** Logging  Ressources **********
 char lastMessage = 255;
 boolean enableDebug = false;
@@ -73,7 +77,6 @@ const int debugPinSelect = 1;
 // Speed transmition for serial com
 const long serialBauds = 9600;
 boolean enableSerial  = false;
-const int serialPinSelect = 0;
 
 // *** ONE WIRE
 // OneWire Network pin attachment
@@ -124,7 +127,7 @@ String httpPayload = "";
 // Program Setup
 void setup()
 {
-  pinMode(serialPinSelect, INPUT_PULLUP);
+  //  pinMode(serialPinSelect, INPUT_PULLUP);
 
   enableSerial = false; //! digitalRead(serialPinSelect);
   enableDebug = false;// ! digitalRead(debugPinSelect);
@@ -136,16 +139,20 @@ void setup()
 
   printVersion();
   logMessage(0, TRUE);
+  blinkLed(5);
   ethSetup();
+  blinkLed(10);
+  lastLoop = millis();
 }
 
 // Loop Control
 void loop()
 {
-  // Perform one loop evrey 5 seconds
+  // Perform one loop evrey x seconds
   unsigned long loopSpan = millis() - lastLoop;
   long waitTime = loopDelay -  loopSpan;
   lastLoop = millis();
+
   if ( waitTime > 0)
   {
     delay(waitTime);
@@ -157,8 +164,18 @@ void loop()
   {
     ethLoop();
   }
+
 }
 
+void blinkLed(char nb)
+{
+  for (char i = 0; i < nb; i++) {
+    digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(120);
+    digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+
+  }
+}
 // Print the current version
 void printVersion()
 {
@@ -209,7 +226,7 @@ void logMessage(char errorMsg, boolean debug) {
 // @len : buffer len
 void logBuffer(byte* buff, long len)
 {
-  if (enableSerial)
+  if (!enableSerial)
   {
     return;
   }
@@ -238,7 +255,12 @@ void owLoop()
   digitalWrite(owActivityLed, HIGH);
   owReadTemperature();
   digitalWrite(owActivityLed, LOW);
-  if(!enableSerial)
+  owPrintData();
+}
+
+void owPrintData()
+{
+  if (!enableSerial)
   {
     return;
   }
@@ -250,8 +272,8 @@ void owLoop()
     Serial.print(owMeasuredTemperature[i], DEC);
     Serial.println(" *C");
   }
-
 }
+
 // Calcultat a CRC and compare to a reference
 // @buffer : data to compute
 // @index : starting index of the data in the buffer
@@ -380,7 +402,7 @@ void owReadTemperature() {
 // Setup Handler for the Ethernet card
 void ethSetup()
 {
-  
+
   pinMode(SDCARD_CS, OUTPUT);
   digitalWrite(SDCARD_CS, HIGH); //Deselect the SD card
   // start the Ethernet connection:
@@ -410,7 +432,6 @@ void ethLoop() {
   }
   else if (ethernetReady) {
     logMessage(151, 0);
-    Serial.println("connection failed");
   }
   else {
     // if you didn't get a connection to the server:
@@ -418,29 +439,25 @@ void ethLoop() {
     return;
   }
 
-  // if there are incoming bytes available 
+  // if there are incoming bytes available
   // from the server, read them and print them:
-  if(enableSerial)
+  if (enableSerial)
   {
-    Serial.println("Waiting Response from server");   
+    Serial.println("Waiting Response from server");
   }
   unsigned long lastConnectionTime = millis();
   boolean canWait = true;
-  while( canWait  ) {
+  while ( canWait  ) {
     canWait = (millis() - lastConnectionTime) < waitingResponse && !ethClient.available();
-    if(enableSerial)
+  }
+  /*
+    if(enableSerial &&  ethClient.available())
     {
-      Serial.println("Can wait : " + canWait ? "True" : "False"); 
+      Serial.println("Response :");
+      while(char c = ethClient .read() != NULL){
+        Serial.print(c);
+      }
     }
-  }
-/*
-  if(enableSerial &&  ethClient.available()) 
-  {
-    Serial.println("Response :");
-    while(char c = ethClient .read() != NULL){
-      Serial.print(c);
-    }
-  }
   */
   ethClient.stop();
 }
@@ -450,7 +467,7 @@ void postRequest()
 {
 
   httpPayload = "[";
-  
+
   for (int i; i < owNbDevices; i++)
   {
     String sensorId = "";
@@ -462,7 +479,7 @@ void postRequest()
     }
 
     httpPayload += "{ \"sensorId\" : \"" + sensorId + "\", \"temperature\" : " + temperature + ", \"timestamp\" : \"\" }";
-    if( i > 0 && i <owNbDevices -1)
+    if ( i > 0 && i < owNbDevices - 1)
     {
       httpPayload += ",";
     }
@@ -474,14 +491,15 @@ void postRequest()
   req += ("Content-Type: application/json; charset=US-ASCII" + httpNewline);
   req += "Accept-Charset: US-ASCII" + httpNewline;
   req += ("Content-Length: " + String(httpPayload.length()) + httpNewline);
-  
+
   req += ("User-Agent: Arduino-JasClient/1.0" + httpNewline);
   req += ("Host: " + String(httpServerName) + httpNewline);
   req += ("Connection: Keep-Alive" + httpNewline + httpNewline);
   req += httpPayload;
-  
+
   logMessage(52, 1);
-  ethClient.println(req);
+  ethClient.println(req); // send data
+
   if (enableSerial) {
     Serial.println(req);
   }
